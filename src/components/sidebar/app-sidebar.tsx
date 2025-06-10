@@ -2,13 +2,9 @@
 
 import * as React from "react"
 import {
-  Accessibility,
-  BugPlay,
-  Code,
-  Codesandbox,
+  CirclePlus,
   CodeXml,
-  Computer,
-  FileType,
+  FolderSearch,
 } from "lucide-react"
 
 import { NavMain } from "@/components/sidebar/nav-main"
@@ -33,109 +29,24 @@ const data = {
   },
   navMain: [
     {
-      title: "Front-End",
-      url: "#",
+      name: "Visualizar todos os Roadmaps",
+      url: "/roadmaps",
       icon: CodeXml,
-      isActive: true,
-      items: [
-        {
-          title: "React",
-          url: "#",
-        },
-        {
-          title: "React Native",
-          url: "#",
-        },
-        {
-          title: "Angular",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Backend",
-      url: "#",
-      icon: BugPlay,
-      items: [
-        {
-          title: "Node.js",
-          url: "#",
-        },
-        {
-          title: "Java",
-          url: "#",
-        },
-        {
-          title: "Python",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "DevOps",
-      url: "#",
-      icon: Codesandbox,
-      items: [
-        {
-          title: "Docker",
-          url: "#",
-        },
-        {
-          title: "AWS",
-          url: "#",
-        },
-        {
-          title: "Kubernetes",
-          url: "#",
-        },
-        {
-          title: "",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Data Analyst",
-      url: "#",
-      icon: Computer,
-      items: [
-        {
-          title: "SQL",
-          url: "#",
-        },
-        {
-          title: "Python",
-          url: "#",
-        },
-        {
-          title: "R",
-          url: "#",
-        },
-        {
-          title: "Data Structures",
-          url: "#",
-        },
-      ],
     },
   ],
   projects: [
     {
-      name: "JavaScript",
-      url: "#",
-      icon: Code,
+      name: "Meus Roadmaps",
+      url: "/roadmaps/mine",
+      icon: FolderSearch,
     },
     {
-      name: "Typescript",
-      url: "#",
-      icon: FileType,
-    },
-    {
-      name: "PHP",
-      url: "#",
-      icon: Accessibility,
+      name: "Criar novo Roadmap",
+      url: "/roadmaps/create",
+      icon: CirclePlus,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
