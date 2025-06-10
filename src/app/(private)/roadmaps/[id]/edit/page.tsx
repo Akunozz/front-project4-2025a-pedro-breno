@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { ArrowLeftCircle } from "lucide-react";
+import { ArrowLeftCircle, Trash2 } from "lucide-react";
 
 interface PassoInput {
   _id?: string;
@@ -20,6 +20,7 @@ export default function EditRoadmapPage() {
   const router = useRouter();
   const params = useParams() as { id: string };
   const { id } = params;
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -59,6 +60,9 @@ export default function EditRoadmapPage() {
       ...prev,
       { titulo: "", descricao: "", concluido: false },
     ]);
+    setTimeout(() =>{
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   }
 
   function removePasso(index: number) {
@@ -144,14 +148,14 @@ export default function EditRoadmapPage() {
           {passos.map((passo, idx) => (
             <div key={idx} className="border p-4 rounded space-y-2 relative">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
-                className="absolute top-2 right-2"
+                className="absolute top-1 right-5 text-blue-500"
                 onClick={() => removePasso(idx)}
               >
-                &times;
+                <Trash2 />
               </Button>
-              <div className="space-y-1">
+              <div className="space-y-4">
                 <Label htmlFor={`passo-titulo-${idx}`}>Título do Passo</Label>
                 <Input
                   id={`passo-titulo-${idx}`}
@@ -162,7 +166,7 @@ export default function EditRoadmapPage() {
                   required
                 />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-4">
                 <Label htmlFor={`passo-desc-${idx}`}>Descrição do Passo</Label>
                 <Textarea
                   id={`passo-desc-${idx}`}
@@ -176,6 +180,7 @@ export default function EditRoadmapPage() {
             </div>
           ))}
         </div>
+        <div ref={bottomRef} />
         <Button type="submit" disabled={loading} className="w-full">
           {loading ? "Salvando..." : "Atualizar Roadmap"}
         </Button>
