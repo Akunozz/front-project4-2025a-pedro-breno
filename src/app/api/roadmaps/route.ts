@@ -1,7 +1,7 @@
 // app/api/roadmaps/route.ts
 import { NextResponse } from "next/server";
 
-const BACKEND_URL = "https://project3-2025a-breno-pedro.onrender.com/roadmaps";
+const BACKEND_URL = "https://project4-2025a-pedro-breno.onrender.com/roadmaps";
 
 export async function GET() {
   const res = await fetch(BACKEND_URL);
