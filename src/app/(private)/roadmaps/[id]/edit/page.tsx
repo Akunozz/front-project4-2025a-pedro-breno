@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { ArrowLeftCircle, Trash2 } from "lucide-react";
+import { ArrowLeftCircle, CirclePlus, Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface PassoInput {
   _id?: string;
@@ -32,7 +33,7 @@ export default function EditRoadmapPage() {
     async function loadRoadmap() {
       try {
         const res = await fetch(
-          `https://project3-2025a-breno-pedro.onrender.com/roadmaps/${id}`
+          `https://project4-2025a-pedro-breno.onrender.com/roadmaps/${id}`
         );
         if (!res.ok) throw new Error("Não foi possível carregar o roadmap");
         const data = await res.json();
@@ -82,7 +83,7 @@ export default function EditRoadmapPage() {
     try {
       const body = { titulo, descricao, passos };
       const res = await fetch(
-        `https://project3-2025a-breno-pedro.onrender.com/roadmaps/${id}`,
+        `https://project4-2025a-pedro-breno.onrender.com/roadmaps/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -94,6 +95,7 @@ export default function EditRoadmapPage() {
         throw new Error(text || "Falha ao atualizar roadmap");
       }
       router.push("/roadmaps/mine");
+      toast.success("Roadmap atualizado com sucesso!");
     } catch (err: any) {
       setError(err.message || "Erro desconhecido");
     } finally {
@@ -110,16 +112,19 @@ export default function EditRoadmapPage() {
 
   return (
     <main className="p-6 w-full mx-auto space-y-6">
-        <div className="flex items-center justify-between space-x-6">
-          <h1 className="text-2xl font-bold">Editar Roadmap</h1>
-          <Link href="/roadmaps/mine">
-            <Button className="bg-blue-500 hover:bg-blue-600">
-              <ArrowLeftCircle />
-              Voltar para meus Roadmaps
-            </Button>
-          </Link>
-        </div>
-      <form onSubmit={handleSubmit} className="mx-auto space-y-4 max-w-[1000px]">
+      <div className="flex items-center justify-between space-x-6">
+        <h1 className="text-2xl font-bold">Editar Roadmap</h1>
+        <Link href="/roadmaps/mine">
+          <Button className="bg-blue-500 hover:bg-blue-600">
+            <ArrowLeftCircle />
+            Voltar para meus Roadmaps
+          </Button>
+        </Link>
+      </div>
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto space-y-4 max-w-[1000px]"
+      >
         <div className="space-y-1">
           <Label htmlFor="titulo">Título</Label>
           <Input
@@ -141,16 +146,13 @@ export default function EditRoadmapPage() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold">Passos</h2>
-            <Button type="button" onClick={addPasso} variant="outline">
-              Adicionar Passo
-            </Button>
           </div>
           {passos.map((passo, idx) => (
             <div key={idx} className="border p-4 rounded space-y-2 relative">
               <Button
                 variant="outline"
                 size="icon"
-                className="absolute top-1 right-5 text-blue-500"
+                className="absolute top-1 right-5 text-blue-500 hover:text-blue-600"
                 onClick={() => removePasso(idx)}
               >
                 <Trash2 />
@@ -180,10 +182,31 @@ export default function EditRoadmapPage() {
             </div>
           ))}
         </div>
+
+        {passos.length === 0 && (
+          <p className="text-sm text-gray-500 text-center">
+            Nenhum passo adicionado. Clique em "Adicionar Passo" para começar.
+          </p>
+        )}
+
         <div ref={bottomRef} />
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Salvando..." : "Atualizar Roadmap"}
+
+        <Button
+          type="button"
+          className="flex justify-center w-full mx-auto"
+          onClick={addPasso}
+          variant="outline"
+        >
+          <CirclePlus />
+          Adicionar Passo
         </Button>
+
+        <div className="flex justify-center w-full mx-auto">
+          <Button type="submit" disabled={loading} className="w-full">
+            <Pencil />
+            {loading ? "Salvando..." : "Atualizar Roadmap"}
+          </Button>
+        </div>
       </form>
     </main>
   );

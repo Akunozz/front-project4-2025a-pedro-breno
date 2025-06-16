@@ -44,7 +44,7 @@ export default function MyRoadmapsPage() {
     const user = JSON.parse(stored);
     const userId = user._id as string;
 
-    fetch("https://project3-2025a-breno-pedro.onrender.com/roadmaps")
+    fetch("https://project4-2025a-pedro-breno.onrender.com/roadmaps")
       .then((res) => {
         if (!res.ok) throw new Error("Falha ao carregar roadmaps");
         return res.json() as Promise<Roadmap[]>;

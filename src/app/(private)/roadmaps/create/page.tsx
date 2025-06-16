@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeftCircle } from "lucide-react";
+import { ArrowLeftCircle, CirclePlus, Pencil, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface PassoInput {
   titulo: string;
@@ -20,9 +21,13 @@ export default function NewRoadmapPage() {
   const [passos, setPassos] = useState<PassoInput[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   function addPasso() {
     setPassos((prev) => [...prev, { titulo: "", descricao: "" }]);
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   }
 
   function removePasso(index: number) {
@@ -58,6 +63,7 @@ export default function NewRoadmapPage() {
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error("Falha ao criar roadmap");
+      toast.success("Roadmap criado com sucesso!");
       router.push("/roadmaps");
     } catch (err: any) {
       setError(err.message || "Erro desconhecido");
@@ -105,9 +111,6 @@ export default function NewRoadmapPage() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold">Passos</h2>
-            <Button type="button" onClick={addPasso} variant="outline">
-              Adicionar Passo
-            </Button>
           </div>
 
           {passos.map((passo, idx) => (
@@ -115,10 +118,10 @@ export default function NewRoadmapPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute top-2 right-2"
+                className="absolute top-1 right-5 text-blue-500 hover:text-blue-600"
                 onClick={() => removePasso(idx)}
               >
-                &times;
+                <Trash2 />
               </Button>
               <div className="space-y-1">
                 <Label htmlFor={`passo-titulo-${idx}`}>Título do Passo</Label>
@@ -146,9 +149,29 @@ export default function NewRoadmapPage() {
           ))}
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Salvando..." : "Criar Roadmap"}
+        {passos.length === 0 && (
+          <p className="text-sm text-gray-500 text-center">
+            Nenhum passo adicionado. Clique em "Adicionar Passo" para começar.
+          </p>
+        )}
+
+        <div ref={bottomRef} />
+        <Button
+          type="button"
+          className="flex justify-center w-full mx-auto"
+          onClick={addPasso}
+          variant="outline"
+        >
+          <CirclePlus />
+          Adicionar Passo
         </Button>
+
+        <div className="flex justify-center w-full mx-auto">
+          <Button type="submit" disabled={loading} className="w-full">
+            <Plus />
+            {loading ? "Salvando..." : "Criar Roadmap"}
+          </Button>
+        </div>
       </form>
     </main>
   );

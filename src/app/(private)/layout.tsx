@@ -8,14 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { Separator } from "@/components/ui/separator";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/provider/theme-provider";
 import { DarkMode } from "@/provider/darkmodebutton";
 
@@ -60,7 +53,7 @@ export default function PrivateLayout({
                     orientation="vertical"
                     className="mr-2 data-[orientation=vertical]:h-4"
                   />
-                  <Breadcrumb>
+                  {/* <Breadcrumb>
                     <BreadcrumbList>
                       <BreadcrumbItem className="hidden md:block">
                         <BreadcrumbLink href="#">
@@ -72,13 +65,14 @@ export default function PrivateLayout({
                         <BreadcrumbPage>Data Fetching</BreadcrumbPage>
                       </BreadcrumbItem>
                     </BreadcrumbList>
-                  </Breadcrumb>
+                  </Breadcrumb> */}
                 </div>
                 <div className="flex items-center gap-2 pr-4">
                   <DarkMode />
                 </div>
               </header>
               {children}
+              <Toaster position="top-center" richColors duration={5000}/>
             </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>
