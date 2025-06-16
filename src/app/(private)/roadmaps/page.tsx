@@ -40,8 +40,8 @@ export default function RoadmapsPage() {
     async function fetchData() {
       try {
         const [roadRes, usersRes] = await Promise.all([
-          fetch("https://project3-2025a-breno-pedro.onrender.com/roadmaps"),
-          fetch("https://project3-2025a-breno-pedro.onrender.com/usuarios"),
+          fetch("https://project4-2025a-pedro-breno.onrender.com/roadmaps"),
+          fetch("https://project4-2025a-pedro-breno.onrender.com/usuarios"),
         ]);
 
         if (!roadRes.ok) throw new Error("Falha ao carregar roadmaps");
