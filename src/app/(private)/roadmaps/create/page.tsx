@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeftCircle, CirclePlus, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowLeftCircle, CirclePlus, Pencil, Plus, Trash2, Map } from "lucide-react";
 import { toast } from "sonner";
 
 interface PassoInput {
@@ -64,7 +64,7 @@ export default function NewRoadmapPage() {
       });
       if (!res.ok) throw new Error("Falha ao criar roadmap");
       toast.success("Roadmap criado com sucesso!");
-      router.push("/roadmaps");
+      router.push("/roadmaps/mine");
     } catch (err: any) {
       setError(err.message || "Erro desconhecido");
     } finally {
@@ -83,12 +83,12 @@ export default function NewRoadmapPage() {
             onClick={() => router.push("/roadmaps/mine")}
           >
             <ArrowLeftCircle className="mr-2" />
-            Voltar para Meus Roadmaps
+            Voltar para meus Roadmaps
           </Button>
         </div>
       </header>
       {error && <p className="text-red-600">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-[1000px] mx-auto">
         <div className="space-y-1">
           <Label htmlFor="titulo">Título</Label>
           <Input
@@ -116,14 +116,14 @@ export default function NewRoadmapPage() {
           {passos.map((passo, idx) => (
             <div key={idx} className="border p-4 rounded space-y-2 relative">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
-                className="absolute top-1 right-5 text-blue-500 hover:text-blue-600"
+                className="absolute top-4 right-5 text-blue-500 hover:text-blue-600"
                 onClick={() => removePasso(idx)}
               >
                 <Trash2 />
               </Button>
-              <div className="space-y-1">
+              <div className="space-y-1 mt-8">
                 <Label htmlFor={`passo-titulo-${idx}`}>Título do Passo</Label>
                 <Input
                   id={`passo-titulo-${idx}`}
@@ -168,7 +168,7 @@ export default function NewRoadmapPage() {
 
         <div className="flex justify-center w-full mx-auto">
           <Button type="submit" disabled={loading} className="w-full">
-            <Plus />
+            <Map />
             {loading ? "Salvando..." : "Criar Roadmap"}
           </Button>
         </div>
