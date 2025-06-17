@@ -58,7 +58,7 @@ export default function MyRoadmapsPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      await fetch(`https://project3-2025a-breno-pedro.onrender.com/roadmaps/${id}`, {
+      await fetch(`https://project4-2025a-pedro-breno.onrender.com/roadmaps/${id}`, {
         method: "DELETE",
       });
       setMine((prev) => prev.filter((rm) => rm._id !== id));

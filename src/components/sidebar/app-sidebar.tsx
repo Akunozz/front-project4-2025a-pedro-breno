@@ -1,15 +1,16 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   CirclePlus,
   CodeXml,
   FolderSearch,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/sidebar/nav-main"
-import { NavProjects } from "@/components/sidebar/nav-projects"
-import { NavUser } from "@/components/sidebar/nav-user"
+import { NavMain } from "@/components/sidebar/nav-main";
+import { NavProjects } from "@/components/sidebar/nav-projects";
+import { NavUser } from "@/components/sidebar/nav-user";
+import { Sparkles, BrainCircuit, Wand2 } from "lucide-react";
 
 import {
   Sidebar,
@@ -17,24 +18,37 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import Image from "next/image"
-import logo from "@/assets/roadmap.png"
+} from "@/components/ui/sidebar";
+import Image from "next/image";
+import logo from "@/assets/roadmap.png";
+import { url } from "inspector";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [user, setUser] = React.useState({
+    name: "",
+    avatar: "/avatars/shadcn.jpg", 
+  });
+
+  React.useEffect(() => {
+    const storedUser = sessionStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser({
+        name: parsedUser?.nome || "Usuário",
+        avatar: "/avatars/shadcn.jpg",
+      });
+    }
+  }, []);
+
+  const navMain = [
     {
       name: "Visualizar todos os Roadmaps",
       url: "/roadmaps",
       icon: CodeXml,
     },
-  ],
-  projects: [
+  ];
+
+  const projects = [
     {
       name: "Meus Roadmaps",
       url: "/roadmaps/mine",
@@ -45,25 +59,28 @@ const data = {
       url: "/roadmaps/create",
       icon: CirclePlus,
     },
-  ],
-};
+    {
+      name: "Assistente IA",
+      url: "/roadmaps/generate",
+      icon: Sparkles,
+    },
+  ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <div className="flex h-16 items-center justify-center mt-2">
-        <Image src={logo} alt="logo" width={100}/>
+          <Image src={logo} alt="logo" width={100} />
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={navMain} />
+        <NavProjects projects={projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

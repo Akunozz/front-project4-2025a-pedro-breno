@@ -21,7 +21,7 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Meus Roadmaps</SidebarGroupLabel>
+      <SidebarGroupLabel>Comunidade</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
