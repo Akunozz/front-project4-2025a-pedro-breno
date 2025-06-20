@@ -59,11 +59,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: "/roadmaps/create",
       icon: CirclePlus,
     },
-    {
-      name: "Assistente IA",
-      url: "/roadmaps/generate",
-      icon: Sparkles,
-    },
   ];
 
   return (

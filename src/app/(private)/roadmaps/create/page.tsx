@@ -2,11 +2,11 @@
 
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeftCircle, CirclePlus, Trash2, Map, Eraser, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeftCircle, CirclePlus, Pencil, Plus, Trash2, Map } from "lucide-react";
 import { toast } from "sonner";
 
 interface PassoInput {
@@ -22,6 +22,12 @@ export default function NewRoadmapPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const [iaAberto, setIaAberto] = useState(false);
+  const [temaIA, setTemaIA] = useState("");
+  const [loadingIA, setLoadingIA] = useState(false);
+
+  const isBusy = loading || loadingIA;
 
   function addPasso() {
     setPassos((prev) => [...prev, { titulo: "", descricao: "" }]);
@@ -72,6 +78,58 @@ export default function NewRoadmapPage() {
     }
   }
 
+  async function gerarRoadmapIA() {
+    if (!temaIA.trim()) {
+      toast.error("Por favor, digite um tema para gerar o roadmap");
+      return;
+    }
+
+    try {
+      setLoadingIA(true);
+      const res = await fetch(
+        "https://project4-2025a-pedro-breno.onrender.com/api/generate-roadmap",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ description: temaIA }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Falha ao gerar roadmap");
+
+      const data = await res.json();
+      const roadmap = data.roadmap;
+
+      setTitulo(roadmap.titulo || "");
+      setDescricao(roadmap.descricao || "");
+      if (Array.isArray(roadmap.passos)) {
+        setPassos(
+          roadmap.passos.map((p: any) => ({
+            titulo: p.titulo || "",
+            descricao: p.descricao || "",
+          }))
+        );
+      }
+      toast.success("Roadmap gerado com sucesso!");
+      setIaAberto(false);
+      setTemaIA("");
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao gerar roadmap com IA.");
+    } finally {
+      setLoadingIA(false);
+    }
+  }
+
+  function limparCampos() {
+    setTitulo("");
+    setDescricao("");
+    setPassos([]);
+    setError(null);
+    setTemaIA("");
+    toast("Campos limpos com sucesso.");
+  }
+
   return (
     <main className="p-6 w-full space-y-6">
       <header className="flex items-center justify-between mb-6">
@@ -87,8 +145,43 @@ export default function NewRoadmapPage() {
           </Button>
         </div>
       </header>
+
+      <div className="mb-6 p-4 border rounded max-w-[1000px] mx-auto">
+        <Button
+          variant="outline"
+          onClick={() => setIaAberto((a) => !a)}
+          className="mb-4"
+        >
+          <Sparkles className="mr-2" />
+          {iaAberto ? "Fechar Assistente IA" : "Abrir Assistente IA"}
+        </Button>
+
+        {iaAberto && (
+          <div className="space-y-2">
+            <Label htmlFor="tema-ia">Tema para geração do roadmap</Label>
+            <Input
+              id="tema-ia"
+              value={temaIA}
+              onChange={(e) => setTemaIA(e.currentTarget.value)}
+              placeholder="Digite um tema, ex: Aprender JavaScript"
+            />
+            <Button
+              onClick={gerarRoadmapIA}
+              disabled={loadingIA}
+              className="mt-2"
+            >
+              {loadingIA ? "Gerando..." : "Gerar Roadmap com IA"}
+            </Button>
+          </div>
+        )}
+      </div>
+
       {error && <p className="text-red-600">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-[1000px] mx-auto">
+
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 p-4 max-w-[1000px] mx-auto"
+      >
         <div className="space-y-1">
           <Label htmlFor="titulo">Título</Label>
           <Input
@@ -162,17 +255,41 @@ export default function NewRoadmapPage() {
           onClick={addPasso}
           variant="outline"
         >
-          <CirclePlus />
-          Adicionar Passo
+          <CirclePlus className="mr-2" />
+          Adicionar passo
         </Button>
 
-        <div className="flex justify-center w-full mx-auto">
-          <Button type="submit" disabled={loading} className="w-full">
-            <Map />
+        <div className="flex justify-between gap-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={limparCampos}
+            className="w-1/2"
+          >
+            <Eraser className="mr-2" />
+            Limpar campos
+          </Button>
+
+          <Button
+            type="submit"
+            disabled={loading || passos.length === 0}
+            className="w-1/2"
+          >
+            <Map className="mr-2" />
             {loading ? "Salvando..." : "Criar Roadmap"}
           </Button>
         </div>
       </form>
+      {isBusy && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-white" />
+            <p className="text-white">
+              {loadingIA ? "Gerando roadmap com IA..." : "Salvando roadmap..."}
+            </p>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

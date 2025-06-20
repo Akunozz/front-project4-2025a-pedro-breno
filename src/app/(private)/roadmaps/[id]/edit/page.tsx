@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { ArrowLeftCircle, CirclePlus, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeftCircle, CirclePlus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface PassoInput {
@@ -27,7 +27,10 @@ export default function EditRoadmapPage() {
   const [descricao, setDescricao] = useState("");
   const [passos, setPassos] = useState<PassoInput[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isBusy = loading || saving;
 
   useEffect(() => {
     async function loadRoadmap() {
@@ -61,7 +64,7 @@ export default function EditRoadmapPage() {
       ...prev,
       { titulo: "", descricao: "", concluido: false },
     ]);
-    setTimeout(() =>{
+    setTimeout(() => {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
   }
@@ -79,7 +82,7 @@ export default function EditRoadmapPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+    setSaving(true);
     try {
       const body = { titulo, descricao, passos };
       const res = await fetch(
@@ -99,13 +102,10 @@ export default function EditRoadmapPage() {
     } catch (err: any) {
       setError(err.message || "Erro desconhecido");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   }
 
-  if (loading) {
-    return <p className="p-6 text-center">Carregando dados...</p>;
-  }
   if (error) {
     return <p className="p-6 text-center text-red-600">{error}</p>;
   }
@@ -116,11 +116,12 @@ export default function EditRoadmapPage() {
         <h1 className="text-2xl font-bold">Editar Roadmap</h1>
         <Link href="/roadmaps/mine">
           <Button className="bg-blue-500 hover:bg-blue-600">
-            <ArrowLeftCircle />
+            <ArrowLeftCircle className="mr-2" />
             Voltar para meus Roadmaps
           </Button>
         </Link>
       </div>
+
       <form
         onSubmit={handleSubmit}
         className="mx-auto space-y-4 max-w-[1000px]"
@@ -197,17 +198,27 @@ export default function EditRoadmapPage() {
           onClick={addPasso}
           variant="outline"
         >
-          <CirclePlus />
+          <CirclePlus className="mr-2" />
           Adicionar Passo
         </Button>
 
         <div className="flex justify-center w-full mx-auto">
-          <Button type="submit" disabled={loading} className="w-full">
-            <Pencil />
-            {loading ? "Salvando..." : "Atualizar Roadmap"}
+          <Button type="submit" disabled={saving} className="w-full">
+            <Pencil className="mr-2" />
+            {saving ? "Salvando..." : "Atualizar Roadmap"}
           </Button>
         </div>
       </form>
+      {isBusy && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-white" />
+            <p className="text-white">
+              {loading ? "Carregando roadmap..." : "Salvando alterações..."}
+            </p>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
