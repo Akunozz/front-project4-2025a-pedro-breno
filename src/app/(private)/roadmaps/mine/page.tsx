@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeftCircle, CirclePlus, Edit2, Trash2 } from "lucide-react";
+import { ArrowLeftCircle, CirclePlus, Edit2, LoaderCircle, Trash2 } from "lucide-react";
 
 interface Passo {
   _id: string;
@@ -50,7 +50,7 @@ export default function MyRoadmapsPage() {
         return res.json() as Promise<Roadmap[]>;
       })
       .then((all) => {
-        setMine(all.filter((rm) => rm.autor === userId));
+        setMine(all.filter((rm) => rm.autor === userId).reverse());
       })
       .catch((err: any) => setError(err.message || "Erro desconhecido"))
       .finally(() => setLoading(false));
@@ -69,8 +69,18 @@ export default function MyRoadmapsPage() {
     }
   };
 
-  if (loading)
-    return <p className="p-6 text-center">Carregando seus roadmaps...</p>;
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-background/60">
+        <span className="flex flex-col items-center gap-4">
+          <LoaderCircle className="animate-spin w-12 h-12 text-primary" />
+          <p className="text-lg font-medium text-center">
+            Carregando roadmaps...
+          </p>
+        </span>
+      </div>
+    );
+  }
   if (error) return <p className="p-6 text-center text-red-600">{error}</p>;
 
   return (
@@ -106,9 +116,8 @@ export default function MyRoadmapsPage() {
               {rm.descricao}
             </CardDescription>
             <p className="text-sm text-muted-foreground mt-1">
-              Criado por: Eu mesmo
+              Criado por: {typeof window !== "undefined" && sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!).nome : "Usuário"}
             </p>
-
             <div className="flex items-center justify-between">
               <Link
                 href={`/roadmaps/${rm._id}/edit`}

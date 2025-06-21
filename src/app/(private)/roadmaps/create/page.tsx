@@ -208,6 +208,9 @@ export default function NewRoadmapPage() {
 
           {passos.map((passo, idx) => (
             <div key={idx} className="border p-4 rounded space-y-2 relative">
+              <span className="bg-blue-500 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold shadow">
+                {idx + 1}
+              </span>
               <Button
                 variant="outline"
                 size="icon"
@@ -264,9 +267,9 @@ export default function NewRoadmapPage() {
             type="button"
             variant="outline"
             onClick={limparCampos}
-            className="w-1/2"
+            className="w-1/2 text-red-500 hover:text-red-600"
           >
-            <Eraser className="mr-2" />
+            <Eraser className="mr-2 text-red-500 hover:text-red-600" />
             Limpar campos
           </Button>
 

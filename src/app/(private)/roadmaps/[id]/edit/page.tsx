@@ -150,6 +150,9 @@ export default function EditRoadmapPage() {
           </div>
           {passos.map((passo, idx) => (
             <div key={idx} className="border p-4 rounded space-y-2 relative">
+              <span className="bg-blue-500 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold shadow">
+                {idx + 1}
+              </span>
               <Button
                 variant="outline"
                 size="icon"

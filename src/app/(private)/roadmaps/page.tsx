@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, LoaderCircle, LoaderPinwheel } from "lucide-react";
 
 interface Passo {
   _id: string;
@@ -68,7 +68,14 @@ export default function RoadmapsPage() {
   }, []);
 
   if (loading) {
-    return <p className="p-6 text-center">Carregando roadmaps...</p>;
+    return (
+      <div className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-background/60">
+        <span className="flex flex-col items-center gap-4">
+          <LoaderCircle className="animate-spin w-12 h-12 text-primary" />
+          <p className="text-lg font-medium text-center">Carregando roadmaps...</p>
+        </span>
+      </div>
+    ); 
   }
 
   if (error) {
@@ -76,9 +83,9 @@ export default function RoadmapsPage() {
   }
 
   // Filtra roadmaps pelo título
-  const filtered = roadmaps.filter((rm) =>
-    rm.titulo.toLowerCase().includes(filter.toLowerCase())
-  );
+  const filtered = roadmaps
+    .filter((rm) => rm.titulo.toLowerCase().includes(filter.toLowerCase()))
+    .reverse();
 
   return (
     <main className="space-y-10 p-6">
