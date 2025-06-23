@@ -65,7 +65,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     if (session && "user" in session) {
       const user = (session as any).user;
 
-      await fetch("https://project4-2025a-pedro-breno.onrender.com/usuarios/sync", {
+      await fetch("/api/usuarios/sync", { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
