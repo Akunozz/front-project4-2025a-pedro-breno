@@ -70,8 +70,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome: user.name,
-          login: user.email,
-          tipo: "professor",
+          login: user.email
         }),
       });
 
