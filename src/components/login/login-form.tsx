@@ -57,30 +57,50 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   }
 
   const handleGoogleLogin = async () => {
-    const session = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/roadmaps",
-    });
+    try {
+      console.log("Iniciando login com Google...");
 
-    if (session && "user" in session) {
-      const user = (session as any).user;
-
-      const res = await fetch("/api/usuarios/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nome: user.name,
-          login: user.email,
-        }),
+      const session = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/roadmaps",
       });
 
-      const backendUser = await res.json();
+      console.log("Session recebida:", session);
 
-      sessionStorage.setItem("user", JSON.stringify(backendUser));
+      if (session && "user" in session) {
+        const user = (session as any).user;
+        console.log("Dados do usuário:", user);
 
-      router.push("/roadmaps");
+        const res = await fetch("/api/usuarios/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome: user.name,
+            login: user.email,
+          }),
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          console.error("Erro ao sincronizar usuário:", error);
+          throw new Error(error.error || "Erro ao criar usuário");
+        }
+
+        const backendUser = await res.json();
+        console.log("Usuário salvo no backend:", backendUser);
+
+        sessionStorage.setItem("user", JSON.stringify(backendUser));
+
+        router.push("/roadmaps");
+      } else {
+        console.error("Sessão inválida. Login Google falhou.");
+      }
+    } catch (error) {
+      console.error("Erro no login com Google:", error);
+      alert("Erro no login com Google. Veja o console.");
     }
   };
+
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
