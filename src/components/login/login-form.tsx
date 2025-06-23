@@ -12,8 +12,6 @@ import logo from "@/assets/roadmap.png";
 import { toast } from "sonner";
 import { createAuthClient } from "better-auth/client";
 
-// const API_URL = "https://project3-2025a-breno-pedro.onrender.com/usuarios";
-
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
 
@@ -36,7 +34,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         await res.json();
 
       const user = users.find(
-        (u) => u.login === login.trim() && u.senha === senha.trim()
+        (u) => u.login === login.trim() && u.senha === senha.trim() && u.senha !== ""
       );
 
       if (user) {
@@ -53,15 +51,33 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       setLoading(false);
     }
   }
+
   const authClient = createAuthClient({
     basePath: "/api/auth",
   });
 
   const handleGoogleLogin = async () => {
-    await authClient.signIn.social({
+    const session = await authClient.signIn.social({
       provider: "google",
       callbackURL: "/roadmaps",
     });
+
+    if (session && "user" in session) {
+      const user = (session as any).user;
+
+      await fetch("https://project4-2025a-pedro-breno.onrender.com/usuarios/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome: user.name,
+          login: user.email,
+          tipo: "professor",
+        }),
+      });
+
+      sessionStorage.setItem("user", JSON.stringify(user));
+      router.push("/roadmaps");
+    }
   };
 
   return (
