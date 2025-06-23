@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     const res = await fetch(
-      "https://project4-2025a-pedro-breno.onrender.com/api/usuarios/sync",
+      "https://project4-2025a-pedro-breno.onrender.com/usuarios/sync",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
