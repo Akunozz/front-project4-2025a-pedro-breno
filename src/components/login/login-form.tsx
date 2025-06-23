@@ -20,6 +20,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const authClient = createAuthClient({
+    basePath: "/api/auth",
+  });
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -52,10 +56,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     }
   }
 
-  const authClient = createAuthClient({
-    basePath: "/api/auth",
-  });
-
   const handleGoogleLogin = async () => {
     const session = await authClient.signIn.social({
       provider: "google",
@@ -65,16 +65,19 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     if (session && "user" in session) {
       const user = (session as any).user;
 
-      await fetch("/api/usuarios/sync", { 
+      const res = await fetch("/api/usuarios/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome: user.name,
-          login: user.email
+          login: user.email,
         }),
       });
 
-      sessionStorage.setItem("user", JSON.stringify(user));
+      const backendUser = await res.json();
+
+      sessionStorage.setItem("user", JSON.stringify(backendUser));
+
       router.push("/roadmaps");
     }
   };
