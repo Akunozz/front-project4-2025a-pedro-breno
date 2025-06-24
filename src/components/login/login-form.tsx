@@ -62,7 +62,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
       const session = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/roadmaps",
+        callbackURL: "/roadmaps/callback",
       });
 
       console.log("Session recebida:", session);
