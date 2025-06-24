@@ -62,7 +62,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
       const session = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/roadmaps/callback",
+        callbackURL: "/roadmaps",
       });
 
       console.log("Session recebida:", session);
@@ -100,6 +100,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       alert("Erro no login com Google. Veja o console.");
     }
   };
+
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -151,10 +152,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                   variant="outline"
                   type="button"
                   className="w-full"
-                  onClick={() => {
-                    console.log("Botão clicado!");
-                    handleGoogleLogin();
-                  }}
+                  onClick={handleGoogleLogin}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
