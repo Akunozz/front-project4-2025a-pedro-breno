@@ -152,10 +152,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                   type="button"
                   className="w-full"
                   onClick={() => {
-                    authClient.signIn.social({
-                      provider: "google",
-                      callbackURL: "/roadmaps/callback", // Sua página de callback
-                    });
+                    console.log("Botão clicado!");
+                    handleGoogleLogin();
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
