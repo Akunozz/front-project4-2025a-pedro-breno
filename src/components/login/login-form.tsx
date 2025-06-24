@@ -101,7 +101,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     }
   };
 
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -152,7 +151,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                   variant="outline"
                   type="button"
                   className="w-full"
-                  onClick={handleGoogleLogin}
+                  onClick={() => {
+                    console.log("Botão clicado!");
+                    handleGoogleLogin();
+                  }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
