@@ -65,6 +65,7 @@ export function LoginForm({
       provider: "google",
       callbackURL: "/roadmaps",
     });
+    // O redirecionamento ocorre, então o sessionStorage deve ser salvo na página /roadmaps
   };
 
   return (

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { CirclePlus, LoaderCircle, LoaderPinwheel } from "lucide-react";
+import { createAuthClient } from "better-auth/client";
 
 interface Passo {
   _id: string;
@@ -35,6 +36,15 @@ export default function RoadmapsPage() {
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const authClient = createAuthClient({ basePath: "/api/auth" });
+    authClient.getSession().then((session) => {
+      if (session && "data" in session && session.data?.user) {
+        sessionStorage.setItem("user", JSON.stringify(session.data.user));
+      }
+    });
+  }, []);
 
   useEffect(() => {
     async function fetchData() {

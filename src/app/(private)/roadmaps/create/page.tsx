@@ -54,7 +54,7 @@ export default function NewRoadmapPage() {
     try {
       const stored = sessionStorage.getItem("user");
       const usuario = stored ? JSON.parse(stored) : null;
-      const autor = usuario?._id;
+      const autor = usuario?._id || usuario?.id || usuario?.sub;
       if (!autor) throw new Error("Usuário não autenticado");
 
       const body = {
