@@ -39,12 +39,36 @@ export default function RoadmapsPage() {
 
   useEffect(() => {
     const authClient = createAuthClient({ basePath: "/api/auth" });
+
     authClient.getSession().then((session) => {
       if (session && "data" in session && session.data?.user) {
-        sessionStorage.setItem("user", JSON.stringify(session.data.user));
+        const userGoogle = session.data.user;
+
+        const nome = userGoogle.name || userGoogle.email.split("@")[0];
+        const login = userGoogle.email;
+
+        // 🔥 Faz sincronização com backend
+        fetch("https://project4-2025a-pedro-breno.onrender.com/usuarios/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nome, login }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Erro ao sincronizar usuário");
+            return res.json();
+          })
+          .then((usuarioMongo) => {
+            console.log("Usuário sincronizado:", usuarioMongo);
+            sessionStorage.removeItem("app_user");
+            sessionStorage.setItem("user", JSON.stringify(usuarioMongo));
+          })
+          .catch((err) => {
+            console.error("Erro na sincronização do usuário:", err);
+          });
       }
     });
   }, []);
+
 
   useEffect(() => {
     async function fetchData() {
