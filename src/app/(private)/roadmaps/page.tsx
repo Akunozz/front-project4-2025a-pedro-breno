@@ -47,7 +47,6 @@ export default function RoadmapsPage() {
         const nome = userGoogle.name || userGoogle.email.split("@")[0];
         const login = userGoogle.email;
 
-        // 🔥 Faz sincronização com backend
         fetch("https://project4-2025a-pedro-breno.onrender.com/usuarios/sync", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -116,7 +115,6 @@ export default function RoadmapsPage() {
     return <p className="p-6 text-center text-red-600">{error}</p>;
   }
 
-  // Filtra roadmaps pelo título
   const filtered = roadmaps
     .filter((rm) => rm.titulo.toLowerCase().includes(filter.toLowerCase()))
     .reverse();
