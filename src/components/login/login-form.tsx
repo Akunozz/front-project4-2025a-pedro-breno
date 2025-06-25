@@ -12,17 +12,18 @@ import logo from "@/assets/roadmap.png";
 import { toast } from "sonner";
 import { createAuthClient } from "better-auth/client";
 
-export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
+// const API_URL = "https://project3-2025a-breno-pedro.onrender.com/usuarios";
+
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   const router = useRouter();
 
   const [login, setLogin] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const authClient = createAuthClient({
-    basePath: "/api/auth",
-  });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,7 +39,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         await res.json();
 
       const user = users.find(
-        (u) => u.login === login.trim() && u.senha === senha.trim() && u.senha !== ""
+        (u) => u.login === login.trim() && u.senha === senha.trim()
       );
 
       if (user) {
@@ -55,52 +56,16 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       setLoading(false);
     }
   }
+  const authClient = createAuthClient({
+    basePath: "/api/auth",
+  });
 
   const handleGoogleLogin = async () => {
-    try {
-      console.log("Iniciando login com Google...");
-
-      const session = await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/roadmaps",
-      });
-
-      console.log("Session recebida:", session);
-
-      if (session && "user" in session) {
-        const user = (session as any).user;
-        console.log("Dados do usuário:", user);
-
-        const res = await fetch("/api/usuarios/sync", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            nome: user.name,
-            login: user.email,
-          }),
-        });
-
-        if (!res.ok) {
-          const error = await res.json();
-          console.error("Erro ao sincronizar usuário:", error);
-          throw new Error(error.error || "Erro ao criar usuário");
-        }
-
-        const backendUser = await res.json();
-        console.log("Usuário salvo no backend:", backendUser);
-
-        sessionStorage.setItem("user", JSON.stringify(backendUser));
-
-        router.push("/roadmaps");
-      } else {
-        console.error("Sessão inválida. Login Google falhou.");
-      }
-    } catch (error) {
-      console.error("Erro no login com Google:", error);
-      alert("Erro no login com Google. Veja o console.");
-    }
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/roadmaps",
+    });
   };
-
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
